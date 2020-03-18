@@ -159,7 +159,7 @@ protocol CardGame {
 
 protocol CardGameDelegate {
     
-    func gameDidStart(_ : CardGame)
+    func gameDidStart(_ game: CardGame)
     
     func game(player1DidDraw card1: Card, player2DidDraw card2: Card)
 }
@@ -173,8 +173,13 @@ class HighLow: CardGame, CardGameDelegate {
     var deck = myDeck
     
     func play() {
+        gameDidStart(self)
+        
+        
         let drawPlayer1: Card = deck.drawCard()
         let drawPlayer2: Card = deck.drawCard()
+        
+        game(player1DidDraw: drawPlayer1, player2DidDraw: drawPlayer2)
         
         if drawPlayer1 == drawPlayer2 {
             print("PUSH! Both players had a \(drawPlayer1.rank)")
@@ -185,12 +190,14 @@ class HighLow: CardGame, CardGameDelegate {
         }
     }
     
-    func gameDidStart(_ : CardGame) {
-        
+    func gameDidStart(_ game: CardGame) {
+        if game is HighLow {
+            print("Welcome to the game!")
+        }
     }
     
     func game(player1DidDraw card1: Card, player2DidDraw card2: Card) {
-        
+        print("Player 1 drew a \(card1.description) and Player 2 drew a \(card2.description).")
     }
 }
 
@@ -253,7 +260,11 @@ extension Card: Comparable {
 
 class CardGameTracker: CardGameDelegate {
     
-    func gameDidStart(_ : CardGame)
+    func gameDidStart(_ game: CardGame) {
+        if game is HighLow {
+            print("Welcome to the game!")
+        }
+    }
     
     func game(player1DidDraw card1: Card, player2DidDraw card2: Card) {
         print("Player 1 drew a \(card1.description) and Player 2 drew a \(card2.description).")
@@ -271,3 +282,6 @@ class CardGameTracker: CardGameDelegate {
 //: ```
 
 
+let myCardGame = HighLow()
+
+myCardGame.play()
